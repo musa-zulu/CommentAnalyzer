@@ -47,7 +47,6 @@ public class CommentAnalyzer {
 		}
 
 		return resultsMap;
-
 	}
 
 	/**
@@ -61,5 +60,4 @@ public class CommentAnalyzer {
 		countMap.putIfAbsent(key, 0);
 		countMap.put(key, countMap.get(key) + 1);
 	}
-
 }
