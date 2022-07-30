@@ -10,6 +10,8 @@ public class Main {
 	static int SHORTER_THAN_15 = 0;
 	static int MOVER_MENTIONS = 0;
 	static int SHAKER_MENTIONS = 0;
+	static int QUESTIONS = 0;
+	static int SPAM = 0;
 
 	public static void main(String[] args) {
 		List<File> files = new ArrayList<>();
@@ -107,6 +109,8 @@ public class Main {
 		totalResults.put("SHORTER_THAN_15", SHORTER_THAN_15);
 		totalResults.put("MOVER_MENTIONS", MOVER_MENTIONS);
 		totalResults.put("SHAKER_MENTIONS", SHAKER_MENTIONS);
+		totalResults.put("QUESTIONS", QUESTIONS);
+		totalResults.put("SPAM", SPAM);
 	}
 
 	/**
@@ -121,6 +125,10 @@ public class Main {
 				SHORTER_THAN_15 += entry.getValue();
 			} else if (entry.getKey() == "MOVER_MENTIONS") {
 				MOVER_MENTIONS += entry.getValue();
+			} else if (entry.getKey() == "QUESTIONS") {
+				QUESTIONS += entry.getValue();
+			} else if (entry.getKey() == "SPAM") {
+				SPAM += entry.getValue();
 			} else {
 				SHAKER_MENTIONS += entry.getValue();
 			}

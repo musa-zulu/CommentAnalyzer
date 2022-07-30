@@ -7,9 +7,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class CommentAnalyzer {
-
+public class CommentAnalyzer {	
 	private File file;
 	Map<String, Integer> resultsMap = new HashMap<>();
 
@@ -35,6 +36,10 @@ public class CommentAnalyzer {
 
 				if (line.length() < 15) {
 					incOccurrence(resultsMap, "SHORTER_THAN_15");
+				} else if (line.contains("?")) {
+					incOccurrence(resultsMap, "QUESTIONS");
+				} else if (containsLink(line)) {
+					incOccurrence(resultsMap, "SPAM");
 				}
 			}
 
@@ -59,5 +64,25 @@ public class CommentAnalyzer {
 	private void incOccurrence(Map<String, Integer> countMap, String key) {
 		countMap.putIfAbsent(key, 0);
 		countMap.put(key, countMap.get(key) + 1);
+	}
+	
+	
+	public static boolean containsLink(String input) {
+		final String URL_REGEX = "^((https?|ftp)://|(www|ftp)\\.)?[a-z0-9-]+(\\.[a-z0-9-]+)+([/?].*)?$";
+	    boolean result = false;
+
+	    String[] parts = input.split("\\s+");
+
+	    for (String item : parts) {
+	    	
+	    	Pattern pattern = Pattern.compile(URL_REGEX);
+	    	Matcher matcher = pattern.matcher(item);
+	    	if(matcher.find()) {
+	    		result = true;
+	            return result;
+	    	}	    	
+	    }
+
+	    return result;
 	}
 }
