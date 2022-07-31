@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Main {
 	static int SHORTER_THAN_15 = 0;
@@ -25,12 +26,40 @@ public class Main {
 		for (File commentFile : files) {
 			CommentAnalyzer commentAnalyzer = new CommentAnalyzer(commentFile);
 			Map<String, Integer> fileResults = commentAnalyzer.analyze();
-			addReportResults(fileResults, totalResults);
+			
+			calculateResults(fileResults);			
 		}
 
 		setResults(totalResults);
 		System.out.println("RESULTS\n=======");
 		totalResults.forEach((k, v) -> System.out.println(k + " : " + v));
+	}
+
+	private static void calculateResults(Map<String, Integer> fileResults) {
+		SHORTER_THAN_15 = calculateUsingFactory(fileResults
+				.entrySet()
+		        .stream().filter(x -> x.getKey().toString().equals("SHORTER_THAN_15"))
+		        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)), "SHORTER_THAN_15");
+		
+		MOVER_MENTIONS = calculateUsingFactory(fileResults
+				.entrySet()
+		        .stream().filter(x -> x.getKey().toString().equals("MOVER_MENTIONS"))
+		        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)), "MOVER_MENTIONS");
+		
+		QUESTIONS = calculateUsingFactory(fileResults
+				.entrySet()
+		        .stream().filter(x -> x.getKey().toString().equals("QUESTIONS"))
+		        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)), "QUESTIONS");
+		
+		SHAKER_MENTIONS = calculateUsingFactory(fileResults
+				.entrySet()
+		        .stream().filter(x -> x.getKey().toString().equals("SHAKER_MENTIONS"))
+		        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)), "SHAKER_MENTIONS");
+		
+		SPAM = calculateUsingFactory(fileResults
+				.entrySet()
+		        .stream().filter(x -> x.getKey().toString().equals("SPAM"))
+		        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)), "SPAM");
 	}
 
 	/**
@@ -113,25 +142,10 @@ public class Main {
 		totalResults.put("SPAM", SPAM);
 	}
 
-	/**
-	 * This method adds the result counts from a source map to the target map *
-	 * 
-	 * @param source the source map
-	 * @param target the target map
-	 */
-	private static void addReportResults(Map<String, Integer> source, Map<String, Integer> target) {
-		for (Map.Entry<String, Integer> entry : source.entrySet()) {
-			if (entry.getKey() == "SHORTER_THAN_15") {
-				SHORTER_THAN_15 += entry.getValue();
-			} else if (entry.getKey() == "MOVER_MENTIONS") {
-				MOVER_MENTIONS += entry.getValue();
-			} else if (entry.getKey() == "QUESTIONS") {
-				QUESTIONS += entry.getValue();
-			} else if (entry.getKey() == "SPAM") {
-				SPAM += entry.getValue();
-			} else {
-				SHAKER_MENTIONS += entry.getValue();
-			}
-		}
-	}
+	public static int calculateUsingFactory(Map<String, Integer> source, String operator) {
+		Operation targetOperation = OperatorFactory.getOperation(operator)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid Operator"));
+		return targetOperation.calculateResults(source);
+	}	
+	
 }
